@@ -75,7 +75,9 @@ class MhQaCli extends Command {
     switch (mode) {
       case 'ios': {
         const branch = await promptForCommonArgs(args.branch, args.apiEnv);
-        const simulator = await pickIosSimulator(args.simulator);
+        const simulator = args.simulator
+          ? args.simulator
+          : await pickIosSimulator();
         await prepareForBuild(branch);
         await pods();
         await launchIos(simulator);
@@ -179,7 +181,7 @@ const setApiEnv = async (apiEnvArg: ApiEnv) => {
   );
 };
 
-const pickIosSimulator = async (simulatorArg: string) => {
+const pickIosSimulator = async () => {
   const devicesObj: {
     devices: {
       [key: string]: {
@@ -197,17 +199,15 @@ const pickIosSimulator = async (simulatorArg: string) => {
     .flat()
     .map(({ name }) => name);
 
-  const { simulator }: { simulator: string } = simulatorArg
-    ? { simulator: simulatorArg }
-    : await inquirer.prompt([
-        {
-          type: 'list',
-          name: 'simulator',
-          message: 'Which iOS simulator would you like to use?'.yellow,
-          choices: simulators,
-          default: 'iPhone X',
-        },
-      ]);
+  const { simulator }: { simulator: string } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'simulator',
+      message: 'Which iOS simulator would you like to use?'.yellow,
+      choices: simulators,
+      default: 'iPhone X',
+    },
+  ]);
 
   return simulator;
 };
