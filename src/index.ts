@@ -36,14 +36,18 @@ class MhQaCli extends Command {
       description:
         'API environment to test against. One of: staging, production',
     },
+    {
+      name: 'simulator',
+      description: 'iOS simulator to use',
+    },
   ];
 
   async run() {
     const {
       args,
-    }: { args: { mode: Mode; branch: string; apiEnv: ApiEnv } } = this.parse(
-      MhQaCli,
-    );
+    }: {
+      args: { mode: Mode; branch: string; apiEnv: ApiEnv; simulator: string };
+    } = this.parse(MhQaCli);
     console.log('🌤️  MissionHub QA CLI  ⛰'.cyan);
 
     const {
@@ -69,16 +73,20 @@ class MhQaCli extends Command {
         ]);
 
     switch (mode) {
-      case 'ios':
-        // TODO: add API env selection
-        await prepareForBuild(args.branch, args.apiEnv);
+      case 'ios': {
+        const branch = await promptForCommonArgs(args.branch, args.apiEnv);
+        const simulator = args.simulator || (await pickIosSimulator());
+        await prepareForBuild(branch);
         await pods();
-        await launchIos();
+        await launchIos(simulator);
         return;
-      case 'android':
-        await prepareForBuild(args.branch, args.apiEnv);
+      }
+      case 'android': {
+        const branch = await promptForCommonArgs(args.branch, args.apiEnv);
+        await prepareForBuild(branch);
         await launchAndroid();
         return;
+      }
       case 'setup':
         return await setup();
       case 'oneskySetup':
@@ -89,9 +97,13 @@ class MhQaCli extends Command {
   }
 }
 
-const prepareForBuild = async (argBranch: string, apiEnv: ApiEnv) => {
+const promptForCommonArgs = async (argBranch: string, apiEnv: ApiEnv) => {
   const branch = argBranch || (await askForBranch());
   await setApiEnv(apiEnv);
+  return branch;
+};
+
+const prepareForBuild = async (branch: string) => {
   await checkoutBranch(branch);
   await yarn();
   await oneskyDownload();
@@ -167,6 +179,37 @@ const setApiEnv = async (apiEnvArg: ApiEnv) => {
   );
 };
 
+const pickIosSimulator = async () => {
+  const devicesObj: {
+    devices: {
+      [key: string]: {
+        state: string;
+        isAvailable: boolean;
+        name: string;
+        udid: string;
+      }[];
+    };
+  } = JSON.parse(
+    (await exec('xcrun simctl list devices iPhone available -j')).stdout,
+  );
+
+  const simulators = Object.values(devicesObj.devices)
+    .flat()
+    .map(({ name }) => name);
+
+  const { simulator }: { simulator: string } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'simulator',
+      message: 'Which iOS simulator would you like to use?'.yellow,
+      choices: simulators,
+      default: 'iPhone X',
+    },
+  ]);
+
+  return simulator;
+};
+
 async function checkoutBranch(branch: string) {
   cli.action.start('🚛  Checking out branch: ' + branch);
   await exec(`cd ~/code/missionhub-react-native && git fetch origin ${branch}`);
@@ -201,11 +244,11 @@ async function pods() {
   cli.action.stop();
 }
 
-async function launchIos() {
+async function launchIos(simulator: string) {
   cli.action.start('📲  Building and launching on iOS simulator');
   try {
     await exec(
-      'cd ~/code/missionhub-react-native && yarn ios --configuration Release',
+      `cd ~/code/missionhub-react-native && yarn ios --configuration Release --simulator="${simulator}"`,
     );
   } catch (e) {
     console.error(e.stdout.red);
