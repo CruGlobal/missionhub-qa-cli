@@ -75,9 +75,7 @@ class MhQaCli extends Command {
     switch (mode) {
       case 'ios': {
         const branch = await promptForCommonArgs(args.branch, args.apiEnv);
-        const simulator = args.simulator
-          ? args.simulator
-          : await pickIosSimulator();
+        const simulator = args.simulator || (await pickIosSimulator());
         await prepareForBuild(branch);
         await pods();
         await launchIos(simulator);
