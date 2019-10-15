@@ -43,10 +43,18 @@ const dependencies: {
       'cp ~/code/missionhub-react-native/.env.beta ~/code/missionhub-react-native/.env',
   },
   {
+    title: '🤖  Installing android studio',
+    check: 'ls /Applications/Android\\ Studio.app/Contents',
+    install: 'brew cask install android-studio',
+  },
+  {
     title: '📱  Creating Android Emulator',
     check: '[ ! -f ~/Library/Android/sdk/tools/bin/avdmanager ]',
     install:
-      '~/Library/Android/sdk/tools/bin/avdmanager create avd --name missionhub-qa-cli --package "system-images;android-29;google_apis;x86" --device pixel_xl --force',
+      'JAVA_HOME=/Applications/Android\\ Studio.app/Contents/jre/jdk/Contents/Home ' +
+      '~/Library/Android/sdk/tools/bin/sdkmanager "system-images;android-29;google_apis;x86" && ' +
+      '~/Library/Android/sdk/tools/bin/avdmanager create avd --name missionhub_qa_cli --package "system-images;android-29;google_apis;x86" --device pixel_xl --force && ' +
+      '(grep -qF -- "hw.keyboard=yes" ~/.android/avd/missionhub_qa_cli.avd/config.ini || echo "hw.keyboard=yes" >> ~/.android/avd/missionhub_qa_cli.avd/config.ini)',
   },
 ];
 
