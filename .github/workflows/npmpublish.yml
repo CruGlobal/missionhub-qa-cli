@@ -2,8 +2,8 @@ name: NPM Package
 
 on:
   push:
-    branches:
-      - refs/tags/*
+    tags:
+    - '*'
 
 jobs:
   publish-npm:
