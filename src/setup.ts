@@ -50,11 +50,10 @@ const dependencies: {
   {
     title: '📱  Creating Android Emulator',
     check: '[ ! -f ~/Library/Android/sdk/tools/bin/avdmanager ]',
-    install:
-      'JAVA_HOME=/Applications/Android\\ Studio.app/Contents/jre/jdk/Contents/Home ' +
-      '~/Library/Android/sdk/tools/bin/sdkmanager "system-images;android-29;google_apis;x86" && ' +
-      '~/Library/Android/sdk/tools/bin/avdmanager create avd --name missionhub_qa_cli --package "system-images;android-29;google_apis;x86" --device pixel_xl --force && ' +
-      '(grep -qF -- "hw.keyboard=yes" ~/.android/avd/missionhub_qa_cli.avd/config.ini || echo "hw.keyboard=yes" >> ~/.android/avd/missionhub_qa_cli.avd/config.ini)',
+    install: `JAVA_HOME=/Applications/Android\\ Studio.app/Contents/jre/jdk/Contents/Home
+      ~/Library/Android/sdk/tools/bin/sdkmanager "system-images;android-29;google_apis;x86" &&
+      ~/Library/Android/sdk/tools/bin/avdmanager create avd --name missionhub_qa_cli --package "system-images;android-29;google_apis;x86" --device pixel_xl --force &&
+      (grep -qF -- "hw.keyboard=yes" ~/.android/avd/missionhub_qa_cli.avd/config.ini || echo "hw.keyboard=yes" >> ~/.android/avd/missionhub_qa_cli.avd/config.ini)`,
   },
 ];
 
