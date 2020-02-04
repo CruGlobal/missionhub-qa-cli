@@ -1,0 +1,22 @@
+language: node_js
+node_js: '13'
+if: tag IS present
+script:
+  - git config --local user.email "travis@travis-ci.org"
+  - git config --local user.name "Travis CI"
+  - npm --no-git-tag-version version `git describe --tags`
+  - git commit -m "Bump version" -a
+  - git push https://ozzieorca:$GIT_PERSONAL_ACCESS_TOKEN@github.com/CruGlobal/missionhub-qa-cli.git HEAD:master
+deploy:
+  provider: npm
+  email: ozzieorca@gmail.com
+  api_key: '$NPM_TOKEN'
+  on:
+    tags: true
+    repo: CruGlobal/missionhub-qa-cli
+  skip_cleanup: true
+  edge: true
+cache:
+  yarn: true
+  directories:
+    - node_modules
