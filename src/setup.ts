@@ -31,11 +31,16 @@ const dependencies: {
     install: 'brew install yarn',
   },
   {
+    title: '📁  Creating directories',
+    check: 'cd ~/code',
+    install: 'mkdir ~/code',
+  },
+  {
     title: '🌀  Cloning repo',
     check:
       'cd ~/code/missionhub-react-native && git rev-parse --is-inside-work-tree',
     install:
-      'mkdir ~/code && cd ~/code && git clone https://github.com/CruGlobal/missionhub-react-native.git',
+      'cd ~/code && git clone https://github.com/CruGlobal/missionhub-react-native.git',
   },
   {
     title: '🏞️  Initializing .env',
