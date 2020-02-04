@@ -107,6 +107,7 @@ const prepareForBuild = async (branch: string) => {
   await checkoutBranch(branch);
   await yarn();
   await oneskyDownload();
+  await gqlSchemaDownload();
 };
 
 async function askForBranch() {
@@ -235,6 +236,12 @@ async function oneskyDownload() {
         .yellow,
     );
   }
+  cli.action.stop();
+}
+
+async function gqlSchemaDownload() {
+  cli.action.start('📈  Downloading GraphQL Schema');
+  await exec('cd ~/code/missionhub-react-native && yarn gql:schema');
   cli.action.stop();
 }
 
