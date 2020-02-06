@@ -241,7 +241,7 @@ async function oneskyDownload() {
 
 async function gqlSchemaDownload() {
   cli.action.start('📈  Downloading GraphQL Schema');
-  await exec('cd ~/code/missionhub-react-native && yarn gql:schema');
+  await exec('cd ~/code/missionhub-react-native && yarn gql:schema && yarn gql:codegen');
   cli.action.stop();
 }
 
