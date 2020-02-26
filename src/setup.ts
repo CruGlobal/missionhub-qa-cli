@@ -45,7 +45,7 @@ const dependencies: {
   {
     title: '🏞️  Initializing .env',
     install:
-      'cp ~/code/missionhub-react-native/.env.beta ~/code/missionhub-react-native/.env',
+      'cp ~/code/missionhub-react-native/.env.staging ~/code/missionhub-react-native/.env',
   },
   {
     title: '🤖  Installing android studio',
