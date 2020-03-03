@@ -8,12 +8,21 @@ import * as fs from 'fs';
 
 import { setup } from './setup';
 import { oneskySetup } from './onesky';
+import { REPO_DIRECTORY } from './constants';
+import { clearIosBuild, clearAndroidBuild } from './utils';
 
 const exec = util.promisify(execCallback);
 const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
 
-type Mode = 'ios' | 'android' | 'setup' | 'oneskySetup' | 'exit';
+type Mode =
+  | 'ios'
+  | 'android'
+  | 'setup'
+  | 'oneskySetup'
+  | 'clearIosBuild'
+  | 'clearAndroidBuild'
+  | 'exit';
 type ApiEnv = 'staging' | 'production';
 
 class MhQaCli extends Command {
@@ -67,7 +76,18 @@ class MhQaCli extends Command {
               new inquirer.Separator(),
               { name: '🛠️  Setup dev tools', value: 'setup' },
               { name: '🌌  Setup OneSky keys', value: 'oneskySetup' },
+              new inquirer.Separator(),
+              {
+                name: '🗑️🍏  Remove iOS build artifacts',
+                value: 'clearIosBuild',
+              },
+              {
+                name: '🗑️🤖  Remove Android build artifacts',
+                value: 'clearAndroidBuild',
+              },
+              new inquirer.Separator(),
               { name: '❌  Exit', value: 'exit' },
+              new inquirer.Separator(),
             ],
           },
         ]);
@@ -91,6 +111,10 @@ class MhQaCli extends Command {
         return await setup();
       case 'oneskySetup':
         return await oneskySetup();
+      case 'clearIosBuild':
+        return await clearIosBuild();
+      case 'clearAndroidBuild':
+        return await clearAndroidBuild();
       case 'exit':
         return;
     }
@@ -126,7 +150,7 @@ async function fetchBranches() {
   cli.action.start('👀  Fetching branches');
 
   const { stdout } = await exec(
-    "cd ~/code/missionhub-react-native && git ls-remote -q --heads | awk '{print $2}'",
+    `cd ${REPO_DIRECTORY} && git ls-remote -q --heads | awk '{print $2}'`,
   );
 
   const sortPriority = (branch: string) =>
@@ -213,23 +237,21 @@ const pickIosSimulator = async () => {
 
 async function checkoutBranch(branch: string) {
   cli.action.start('🚛  Checking out branch: ' + branch);
-  await exec(`cd ~/code/missionhub-react-native && git fetch origin ${branch}`);
-  await exec(
-    `cd ~/code/missionhub-react-native && git checkout -f origin/${branch}`,
-  );
+  await exec(`cd ${REPO_DIRECTORY} && git fetch origin ${branch}`);
+  await exec(`cd ${REPO_DIRECTORY} && git checkout -f origin/${branch}`);
   cli.action.stop();
 }
 
 async function yarn() {
   cli.action.start('🧶  Installing JS dependencies');
-  await exec('cd ~/code/missionhub-react-native && yarn');
+  await exec(`cd ${REPO_DIRECTORY} && yarn`);
   cli.action.stop();
 }
 
 async function oneskyDownload() {
   cli.action.start('💬  Downloading translations from OneSky');
   try {
-    await exec('cd ~/code/missionhub-react-native && yarn onesky:download');
+    await exec(`cd ${REPO_DIRECTORY} && yarn onesky:download`);
   } catch {
     console.log(
       "⚠️  Warning: Translations not downloaded. Make sure you've configured OneSky API Keys. Continuing..."
@@ -241,13 +263,13 @@ async function oneskyDownload() {
 
 async function gqlSchemaDownload() {
   cli.action.start('📈  Downloading GraphQL Schema');
-  await exec('cd ~/code/missionhub-react-native && yarn gql:schema && yarn gql:codegen');
+  await exec(`cd ${REPO_DIRECTORY} && yarn gql:schema && yarn gql:codegen`);
   cli.action.stop();
 }
 
 async function pods() {
   cli.action.start('📦  Installing iOS pods');
-  await exec('cd ~/code/missionhub-react-native && yarn ios:pod');
+  await exec(`cd ${REPO_DIRECTORY} && yarn ios:pod`);
   cli.action.stop();
 }
 
@@ -255,7 +277,7 @@ async function launchIos(simulator: string) {
   cli.action.start('📲  Building and launching on iOS simulator');
   try {
     await exec(
-      `cd ~/code/missionhub-react-native && yarn ios --configuration Release --simulator="${simulator}"`,
+      `cd ${REPO_DIRECTORY} && yarn ios --configuration Release --simulator="${simulator}"`,
     );
   } catch (e) {
     console.error(e.stdout.red);
@@ -268,7 +290,7 @@ async function launchAndroid() {
   exec('~/Library/Android/sdk/emulator/emulator -avd missionhub-qa-cli &');
   try {
     await exec(
-      `cd ~/code/missionhub-react-native && ANDROID_SDK_ROOT=${process.env.HOME}/Library/Android/sdk yarn android`,
+      `cd ${REPO_DIRECTORY} && ANDROID_SDK_ROOT=${process.env.HOME}/Library/Android/sdk yarn android`,
     );
   } catch (e) {
     console.error(e.stdout.red);

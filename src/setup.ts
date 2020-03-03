@@ -1,6 +1,7 @@
 import 'colors';
 import * as Listr from 'listr';
 import * as util from 'util';
+import { REPO_DIRECTORY } from './constants';
 
 const exec = util.promisify(require('child_process').exec);
 
@@ -37,15 +38,13 @@ const dependencies: {
   },
   {
     title: '🌀  Cloning repo',
-    check:
-      'cd ~/code/missionhub-react-native && git rev-parse --is-inside-work-tree',
+    check: `cd ${REPO_DIRECTORY} && git rev-parse --is-inside-work-tree`,
     install:
       'cd ~/code && git clone https://github.com/CruGlobal/missionhub-react-native.git',
   },
   {
     title: '🏞️  Initializing .env',
-    install:
-      'cp ~/code/missionhub-react-native/.env.staging ~/code/missionhub-react-native/.env',
+    install: `cp ${REPO_DIRECTORY}/.env.staging ${REPO_DIRECTORY}/.env`,
   },
   {
     title: '🤖  Installing android studio',
