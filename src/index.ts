@@ -268,6 +268,10 @@ async function gqlSchemaDownload() {
 }
 
 async function pods() {
+  cli.action.start('💎  Installing gems');
+  await exec(`cd ${REPO_DIRECTORY}/ios && bundle install`);
+  cli.action.stop();
+
   cli.action.start('📦  Installing iOS pods');
   await exec(`cd ${REPO_DIRECTORY} && yarn ios:pod`);
   cli.action.stop();

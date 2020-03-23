@@ -22,9 +22,9 @@ const dependencies: {
     install: 'brew install git',
   },
   {
-    title: '🍫  Installing cocoapods',
-    check: 'command -v pod',
-    install: 'gem install cocoapods',
+    title: '💎  Installing RubyGems bundler',
+    check: 'command -v bundle',
+    install: 'gem install bundler',
   },
   {
     title: '🧶  Installing yarn',
