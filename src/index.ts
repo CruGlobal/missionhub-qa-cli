@@ -57,7 +57,10 @@ class MhQaCli extends Command {
     }: {
       args: { mode: Mode; branch: string; apiEnv: ApiEnv; simulator: string };
     } = this.parse(MhQaCli);
-    console.log('🌤️  MissionHub QA CLI  ⛰'.cyan);
+    console.log(
+      '🌤️  MissionHub QA CLI  ⛰'.cyan,
+      `  v${process.env.npm_package_version}`.magenta,
+    );
 
     const {
       mode,
