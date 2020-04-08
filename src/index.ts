@@ -276,7 +276,7 @@ async function pods() {
   cli.action.stop();
 
   cli.action.start('📦  Installing iOS pods');
-  await exec(`cd ${REPO_DIRECTORY} && yarn ios:pod`);
+  await exec(`cd ${REPO_DIRECTORY}/ios && pod install --repo-update`);
   cli.action.stop();
 }
 
