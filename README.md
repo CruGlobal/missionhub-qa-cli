@@ -10,20 +10,21 @@ A command to get MissionHub QA running
 # Setup
 
 1. Install homebrew https://brew.sh/#install
-2. Update ruby version
-   Install asdf https://asdf-vm.com/#/core-manage-asdf-vm?id=install (use macOS and Homebrew instructions unless you're on a different environment)
-   `asdf plugin add ruby`
-   `asdf install ruby latest`
+2. Update ruby version\
+   Install asdf https://asdf-vm.com/#/core-manage-asdf-vm?id=install (use macOS and Homebrew instructions unless you're on a different environment)\
+   `asdf plugin add ruby`\
+   `asdf install ruby latest`\
    `(cd ~/code/missionhub-react-native && asdf local ruby latest)` (may have to replace `latest` with version returned by previous command)
-3. Install yarn
+3. Install yarn\
    `brew install yarn`
-4. Install mh-qa-cli
+4. Install mh-qa-cli\
    `yarn global add mh-qa-cli`
-   For updates run again with the version to upgrade to. Example: `yarn global add mh-qa-cli@0.3.3`
+   
+   For updates, run again with the version to upgrade to. Example: `yarn global add mh-qa-cli@0.3.3`
 
 # Usage
 
-Run `mh-qa-cli` and select what you would like to do
+Run `mh-qa-cli` and select what you would like to do.\
 If running for the first time choose `🛠️ Setup dev tools`to install dependencies.
 
 To add translation support choose `🌌 Setup OneSky keys`.
@@ -35,11 +36,13 @@ To add translation support choose `🌌 Setup OneSky keys`.
 ## iOS
 
 `mh-qa-cli ios <branch> <staging|production> <simulator name>`
-Example:
+
+Example:\
 `mh-qa-cli ios master production "iPhone 8"`
 
 ## Android
 
 `mh-qa-cli android <branch> <staging|production>`
-Example:
+
+Example:\
 `mh-qa-cli android master production`
