@@ -6,7 +6,7 @@
   "bin": {
     "mh-qa-cli": "./bin/run"
   },
-  "bugs": "https://github.com/soberstadt/mh-qa-cli/issues",
+  "bugs": "https://github.com/CruGlobal/missionhub-qa-cli/issues",
   "dependencies": {
     "@oclif/command": "^1",
     "@oclif/config": "^1",
@@ -33,7 +33,7 @@
     "/bin",
     "/lib"
   ],
-  "homepage": "https://github.com/soberstadt/mh-qa-cli",
+  "homepage": "https://github.com/CruGlobal/missionhub-qa-cli",
   "keywords": [
     "oclif"
   ],
@@ -45,7 +45,7 @@
       "identifier": "com.missionhub.qa.cli"
     }
   },
-  "repository": "soberstadt/mh-qa-cli",
+  "repository": "CruGlobal/mh-qa-cli",
   "scripts": {
     "start": "./bin/run",
     "posttest": "tslint -p . -t stylish",
