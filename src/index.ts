@@ -9,7 +9,7 @@ import * as fs from 'fs';
 import { setup } from './setup';
 import { oneskySetup } from './onesky';
 import { REPO_DIRECTORY } from './constants';
-import { clearIosBuild, clearAndroidBuild } from './utils';
+import { clearIosBuild, clearIosPods, clearAndroidBuild } from './utils';
 
 const exec = util.promisify(execCallback);
 const readFile = util.promisify(fs.readFile);
@@ -21,6 +21,7 @@ type Mode =
   | 'setup'
   | 'oneskySetup'
   | 'clearIosBuild'
+  | 'clearIosPods'
   | 'clearAndroidBuild'
   | 'exit';
 type ApiEnv = 'staging' | 'production';
@@ -81,11 +82,15 @@ class MhQaCli extends Command {
               { name: '🌌  Setup OneSky keys', value: 'oneskySetup' },
               new inquirer.Separator(),
               {
-                name: '🗑️🍏  Remove iOS build artifacts',
+                name: '🗑️🍏🏺  Remove iOS build artifacts',
                 value: 'clearIosBuild',
               },
               {
-                name: '🗑️🤖  Remove Android build artifacts',
+                name: '🗑️🍏🥜  Remove installed iOS Pods',
+                value: 'clearIosPods',
+              },
+              {
+                name: '🗑️🤖🏺  Remove Android build artifacts',
                 value: 'clearAndroidBuild',
               },
               new inquirer.Separator(),
@@ -116,6 +121,8 @@ class MhQaCli extends Command {
         return await oneskySetup();
       case 'clearIosBuild':
         return await clearIosBuild();
+      case 'clearIosPods':
+        return await clearIosPods();
       case 'clearAndroidBuild':
         return await clearAndroidBuild();
       case 'exit':
