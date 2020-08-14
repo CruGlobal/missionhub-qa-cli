@@ -175,7 +175,7 @@ async function fetchBranches() {
   const branches = stdout
     .split('\n')
     .filter(Boolean)
-    .map(branch => branch.trim().replace('refs/heads/', ''))
+    .map((branch) => branch.trim().replace('refs/heads/', ''))
     .sort(
       (a, b) =>
         sortPriority(b) - sortPriority(a) ||
@@ -283,7 +283,7 @@ async function pods() {
   cli.action.stop();
 
   cli.action.start('📦  Installing iOS pods');
-  await exec(`cd ${REPO_DIRECTORY}/ios && pod install --repo-update`);
+  await exec(`cd ${REPO_DIRECTORY} && yarn ios:pod --repo-update`);
   cli.action.stop();
 }
 
@@ -303,8 +303,8 @@ async function launchAndroid() {
   cli.action.start('📲  Building and launching on Android emulator');
   exec('~/Library/Android/sdk/emulator/emulator -avd missionhub-qa-cli &');
   try {
-    await exec(
-      `cd ${REPO_DIRECTORY} && ANDROID_SDK_ROOT=${process.env.HOME}/Library/Android/sdk yarn android`,
+      await exec(
+        `cd ${REPO_DIRECTORY} && ANDROID_SDK_ROOT=${process.env.HOME}/Library/Android/sdk yarn android`,
     );
   } catch (e) {
     console.error(e.stdout.red);
